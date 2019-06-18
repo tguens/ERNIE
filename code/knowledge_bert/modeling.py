@@ -379,7 +379,7 @@ class BertLayerMix(nn.Module):
 
     def forward(self, hidden_states, attention_mask, hidden_states_ent, attention_mask_ent, ent_mask):
         attention_output = self.attention(hidden_states, attention_mask)
-        attention_output_ent = hidden_states_ent * ent_mask
+        attention_output_ent = hidden_states_ent * ent_mask #Simple masking with zeros. 
         intermediate_output = self.intermediate(attention_output, attention_output_ent)
         layer_output, layer_output_ent = self.output(intermediate_output, attention_output, attention_output_ent)
         # layer_output_ent = layer_output_ent * ent_mask
@@ -435,7 +435,7 @@ class BertEncoder(nn.Module):
     def forward(self, hidden_states, attention_mask, hidden_states_ent, attention_mask_ent, ent_mask, output_all_encoded_layers=True):
         all_encoder_layers = []
         if self.training:
-            ent_mask = ent_mask.half().unsqueeze(-1)
+            ent_mask = ent_mask.half().unsqueeze(-1) #Equivalent to slef.to(torch.float16)
         else:
             ent_mask = ent_mask.float().unsqueeze(-1)
         #ent_mask = ent_mask.float().unsqueeze(-1)
